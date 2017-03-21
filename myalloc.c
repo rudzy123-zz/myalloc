@@ -43,12 +43,12 @@ void print_freelist_from(node_t *node)
 	}
 }
 
-inline void coalesce_freelist(node_t *listhead)
+inline void coalesce_freelist()
 {
 	/* coalesce all neighboring free regions in the free list */
 
 	if (DEBUG) printf("In coalesce freelist...\n");
-	node_t *target = listhead;
+	node_t *target = __head;
 	node_t *node = target->next;
 	node_t *prev = target;
 
