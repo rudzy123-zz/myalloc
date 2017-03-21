@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	coalesce_freelist(__head);
+	coalesce_freelist();
 
 	freelist[0] = HEAPSIZE-(512*3)-2048-(nodesize*1)-(headersize*4);
 	freelist[1] = 1024+headersize;
@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	coalesce_freelist(__head);
+	coalesce_freelist();
 
 	freelist[0] = HEAPSIZE-(512*3)-2048-(nodesize*1)-(headersize*4);
 	freelist[1] = 1024+headersize;
