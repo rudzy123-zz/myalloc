@@ -148,13 +148,12 @@ int main(int argc, char *argv[]) {
   ptr[0] = alloc_check(512);
   ptr[1] = alloc_check(512);
   for (int i=0; i < 2; i++) {
-    if (ptr[i] != NULL && is_data_good(ptr[i], 512)) {
-      printf("Test 0: Super Simple Allocation is Good :)\n");
-    } else {
+    if (ptr[i] == NULL || !is_data_good(ptr[i], 512)) {
       printf("Test 0: Failed, Super Simple Allocation is not working :(\n");
       return 1;
     }
   }
+  printf("Test 0: Super Simple Allocation is Good :)\n");
 
   // NEW CODE
   // TEST 1: Test simple alloc
