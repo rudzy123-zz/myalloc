@@ -155,6 +155,8 @@ int main(int argc, char *argv[]) {
   }
   printf("Test 0: Super Simple Allocation is Good :)\n");
 
+  // Reset heap
+  destroy_heap();
   // NEW CODE
   // TEST 1: Test simple alloc
   ptr[0] = alloc_check(1024);
