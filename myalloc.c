@@ -5,6 +5,7 @@
 /* change me to 1 for more debugging information
  * change me to 0 for time testing and to clear your mind
  */
+/* Rudolf Musika & Alfonso Sainz Passed Test0.*/
 #define DEBUG 0
 
 void *__heap = NULL;
@@ -117,6 +118,24 @@ void *first_fit(size_t req_size) {
    *     of the old region.
    * --> If you divide a region, remember to update prev's next pointer!
    */
+// while the listitem is NOT Null,do the following.
+    while(listitem != NULL){
+    	if(listitem->size > 0)
+        	prev = listitem;
+    	if(listitem->size >= req_size){
+      	  ptr = listitem;
+        	alloc = listitem;
+        	__head = prev;
+        	__head->size = prev->size - req_size;
+        	__head->next = listitem->next;
+        break;
+    }
+    listitem = listitem->next;
+  }
+  /*
+  if(listitem == NULL)
+    return NULL;
+  */
 
   if (DEBUG) printf("Returning pointer: %p\n", ptr);
   return ptr;
