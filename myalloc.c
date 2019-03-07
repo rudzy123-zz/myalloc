@@ -42,13 +42,71 @@ void print_freelist_from(node_t *node) {
   }
 }
 
+node_t* sort_linked_list(node_t *old_head){
+	// Include recursive base case
+	if(old_head == NULL || old_head->next == NULL){
+		return old_head;
+	}
+
+	// Find smallest node
+	node_t *curr;
+	node_t *smallest;
+	node_t *smallestPrev;
+	node_t *prev;
+
+	curr = old_head;
+	smallest = old_head;
+	prev = old_head;
+	smallestPrev = old_head;
+
+	while(curr != NULL) {
+		if((void*) curr < (void*) smallest) {
+			smallestPrev = prev;
+			smallest = curr;
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+
+	// Switching first node and smallest node
+	node_t* tmp;
+	if(smallest != old_head){
+		smallestPrev->next = old_head;
+		tmp = old_head->next;
+		old_head->next = smallest->next;
+		smallest->next = tmp;
+	}
+
+	// Recurse
+	smallest->next = sort_linked_list(smallest->next);
+
+	return smallest;
+}
+
 void coalesce_freelist() {
   /* coalesce all neighboring free regions in the free list */
 
   if (DEBUG) printf("In coalesce freelist...\n");
+  __head = sort_linked_list(__head);
   node_t *target = __head;
   node_t *node = target->next;
   node_t *prev = target;
+
+	while(target != NULL && node != NULL){
+		if((void*) node == (void*) target + target->size + sizeof(header_t)){
+			printf("Found coalescible\n");
+			node_t *new_next = node->next;
+			target->size = target->size + node->size + sizeof(header_t);
+			target->next = new_next;
+		}else{
+			printf("Found NOT coalescible: %08lx != %08lx\n", (void*) node, (void*) target + target->size + sizeof(header_t));
+
+		}
+
+		prev = target;
+		target = target->next;
+		node = target->next;
+	}
 
   /* traverse the free list, coalescing neighboring regions!
    * some hints:
