@@ -14,6 +14,10 @@ header_t *get_header(void *ptr) {
   return (header_t *) (ptr - sizeof(header_t));
 }
 
+node_t *get_node(void *ptr){
+	return (node_t *) (ptr - sizeof(node_t));
+}
+
 void print_header(header_t *header) {
   printf("[header_t @ %p | buffer @ %p size: %lu magic: %08lx]\n",
          header,
@@ -34,9 +38,7 @@ void print_freelist_from(node_t *node) {
   printf("\nPrinting freelist from %p\n", node);
   while (node != NULL) {
     print_node(node);
-	fprintf(2, "Myalloc 1\n");
     node = node->next;
-	fprintf(2, "Myalloc 2\n");
   }
 }
 
@@ -99,6 +101,93 @@ void *first_fit(size_t req_size) {
   node_t *prev = NULL; /* if listitem is __head, then prev must be null */
   header_t *alloc; /* a pointer to a header you can use for your allocation */
 
+// while the listitem is NOT Null,do the following.
+  //fprintf(2, "Doing first fit");
+  while(listitem != NULL){
+    if((req_size + sizeof(header_t)) <= listitem->size && req_size > 0){
+// Initialize helpful working variables you plan to use.
+	int listitem_is_head = 0;
+	node_t *new_freelist_item_header = NULL;
+
+// Get a copy of the listitem size to be used.
+	int listitem_size = listitem->size;
+// The alloc header replaces the listitem
+      alloc = (void*) listitem;
+      alloc->magic = HEAPMAGIC;
+// The ptr is returned and points to the actual free space we allocate
+      ptr = (void*) alloc + sizeof(header_t);
+
+// Lets find out if the __head is pointing to this listitem. If so, then this listitem 
+//is the first in the freelist
+	if(__head == listitem){
+		listitem_is_head = 1;
+      }
+
+// We only want to create a new freelist item if the remaining space is more than
+// enough for a header and a single byte of memory.
+      /*listitem->size = listitem->size - (req_size + sizeof(header_t));//Taken Out*/
+     	if((listitem_size - req_size) >= (sizeof(header_t) + 1)){
+// Create a new freelist header at the start of the allocation plus the size of the allocation (the end of the allocation)
+		new_freelist_item_header = get_node((void*) ptr + req_size);
+		new_freelist_item_header->size = listitem_size - req_size - sizeof(header_t);
+		new_freelist_item_header->next = listitem->next;
+	}
+
+ //listitem = (void*) ptr + req_size; //Take this out.
+// If the listitem is the head, then we need to update head
+	if(listitem_is_head == 1){
+		printf("=============> List item is head\n");
+// If we were able to fit a new header into the remaining free space
+	if(new_freelist_item_header != NULL){
+		printf("=============> Setting head to the new freelist node:\n");
+					__head = new_freelist_item_header;
+	}else{
+// Otherwise we'll need to set the head to the next freelist item
+		printf("=============> Setting head to the next freelist node\n");
+		__head = listitem->next;
+	}
+	}else{
+		printf("=============> List item is not head\n");
+// The listitem is not the __head, so we need to update the previous free region to whichever the next freelist item header is
+// If we were able to fit a new header into the remaining free space
+	if(new_freelist_item_header != NULL){
+		printf("=============> Setting prev's next to the new freelist node\n");
+		prev->next = new_freelist_item_header;
+	}else{
+// Otherwise we'll need to set the prev to the next freelist item
+		printf("=============> Setting prev's next to the next freelist node\n");
+		prev->next = listitem->next;
+	}
+	}
+
+	printf("=============> Allocation over. Printing freelist:\n");
+	print_freelist_from(__head);
+
+	break;
+	}	
+
+      /* is_first_free = 0;
+      if(__head == listitem){
+        is_first_free = 1;
+      }
+      listitem = (void*) ptr + req_size;
+
+      if(is_first_free == 1){
+      	__head = listitem;
+      }
+        break;
+    } */
+	
+	if(listitem->size > 0){
+        	prev = listitem;
+	}
+    
+    listitem = listitem->next;	// Insert listitem here.
+  }
+  /*
+  if(listitem == NULL)
+    return NULL;
+  */	
   /* traverse the free list from __head! when you encounter a region that
    * is large enough to hold the buffer and required header, use it!
    * If the region is larger than you need, split the buffer into two
@@ -119,33 +208,6 @@ void *first_fit(size_t req_size) {
    *     of the old region.
    * --> If you divide a region, remember to update prev's next pointer!
    */
-// while the listitem is NOT Null,do the following.
-  //fprintf(2, "Doing first fit");
-  while(listitem != NULL){
-    if((req_size + sizeof(header_t)) <= listitem->size && req_size > 0){
-      alloc = (void*) listitem;
-      alloc->magic = HEAPMAGIC;
-      ptr = (void*) alloc + sizeof(header_t);
-      listitem->size = listitem->size - (req_size + sizeof(header_t));
-      listitem = (void*) ptr + req_size; 
-
-      int is_first_free = 0;
-      if(__head == listitem){
-        is_first_free = 1;
-      }
-      listitem = (void*) ptr + req_size;
-
-      if(is_first_free == 1){
-      	__head = listitem;
-      }
-        break;
-    }
-    listitem = listitem->next;
-  }
-  /*
-  if(listitem == NULL)
-    return NULL;
-  */	
 
   if (DEBUG) printf("Returning pointer: %p\n", ptr);
   return ptr;
