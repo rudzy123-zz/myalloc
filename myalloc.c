@@ -111,6 +111,7 @@ void *first_fit(size_t req_size) {
 
 // Get a copy of the listitem size to be used.
 	int listitem_size = listitem->size;
+	node_t *listitem_next = listitem->next;
 // The alloc header replaces the listitem
       alloc = (void*) listitem;
       alloc->magic = HEAPMAGIC;
@@ -130,10 +131,9 @@ void *first_fit(size_t req_size) {
 // Create a new freelist header at the start of the allocation plus the size of the allocation (the end of the allocation)
 		new_freelist_item_header = get_node((void*) ptr + req_size);
 		new_freelist_item_header->size = listitem_size - req_size - sizeof(header_t);
-		new_freelist_item_header->next = listitem->next;
+		new_freelist_item_header->next = listitem_next;
 	}
 
- //listitem = (void*) ptr + req_size; //Take this out.
 // If the listitem is the head, then we need to update head
 	if(listitem_is_head == 1){
 		printf("=============> List item is head\n");
@@ -144,7 +144,7 @@ void *first_fit(size_t req_size) {
 	}else{
 // Otherwise we'll need to set the head to the next freelist item
 		printf("=============> Setting head to the next freelist node\n");
-		__head = listitem->next;
+		__head = listitem_next;
 	}
 	}else{
 		printf("=============> List item is not head\n");
@@ -156,7 +156,7 @@ void *first_fit(size_t req_size) {
 	}else{
 // Otherwise we'll need to set the prev to the next freelist item
 		printf("=============> Setting prev's next to the next freelist node\n");
-		prev->next = listitem->next;
+		prev->next = listitem_next;
 	}
 	}
 
@@ -165,18 +165,6 @@ void *first_fit(size_t req_size) {
 
 	break;
 	}	
-
-      /* is_first_free = 0;
-      if(__head == listitem){
-        is_first_free = 1;
-      }
-      listitem = (void*) ptr + req_size;
-
-      if(is_first_free == 1){
-      	__head = listitem;
-      }
-        break;
-    } */
 	
 	if(listitem->size > 0){
         	prev = listitem;
