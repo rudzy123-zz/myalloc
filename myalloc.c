@@ -91,6 +91,7 @@ void coalesce_freelist() {
   node_t *target = __head;
   node_t *node = target->next;
   node_t *prev = target;
+  int coalescedVersion = 0;
 
 	while(target != NULL && node != NULL){
 		if((void*) node == (void*) target + target->size + sizeof(header_t)){
@@ -98,9 +99,9 @@ void coalesce_freelist() {
 			node_t *new_next = node->next;
 			target->size = target->size + node->size + sizeof(header_t);
 			target->next = new_next;
+			coalescedVersion =1;
 		}else{
 			printf("Found NOT coalescible: %08lx != %08lx\n", (void*) node, (void*) target + target->size + sizeof(header_t));
-
 		}
 
 		prev = target;
@@ -116,6 +117,7 @@ void coalesce_freelist() {
    * --> see print_free_list_from for basic code for traversing a
    *     linked list!
    */
+	if(coalescedVersion ==1){ coalesce_freelist();}
 }
 
 void destroy_heap() {
@@ -187,7 +189,7 @@ void *first_fit(size_t req_size) {
 // We only want to create a new freelist item if the remaining space is more than
 // enough for a header and a single byte of memory.
       /*listitem->size = listitem->size - (req_size + sizeof(header_t));//Taken Out*/
-     	if((listitem_size - req_size) >= (sizeof(header_t) + 1)){
+     	if((listitem_size - req_size) >= (sizeof(header_t))){
 // Create a new freelist header at the start of the allocation plus the size of the allocation (the end of the allocation)
 		new_freelist_item_header = (void*) ptr + req_size;
 		new_freelist_item_header->size = listitem_size - req_size - sizeof(header_t);
