@@ -91,7 +91,8 @@ void init_heap() {
 }
 
 void *first_fit(size_t req_size) {
-  void *ptr = NULL; /* pointer to the match that we'll return */
+  void *ptr = __head;/* pointer to the match that we'll return */
+  int found_space_youget = 0; 
 
   if (DEBUG)
     printf("In first_fit with size: %u and freelist @ %p\n",
@@ -115,6 +116,7 @@ void *first_fit(size_t req_size) {
 // The alloc header replaces the listitem
       alloc = (void*) listitem;
       alloc->magic = HEAPMAGIC;
+      alloc->size = req_size;
 // The ptr is returned and points to the actual free space we allocate
       ptr = (void*) alloc + sizeof(header_t);
 
@@ -140,7 +142,7 @@ void *first_fit(size_t req_size) {
 // If we were able to fit a new header into the remaining free space
 	if(new_freelist_item_header != NULL){
 		printf("=============> Setting head to the new freelist node:\n");
-					__head = new_freelist_item_header;
+		__head = new_freelist_item_header;
 	}else{
 // Otherwise we'll need to set the head to the next freelist item
 		printf("=============> Setting head to the next freelist node\n");
@@ -162,6 +164,7 @@ void *first_fit(size_t req_size) {
 
 	printf("=============> Allocation over. Printing freelist:\n");
 	print_freelist_from(__head);
+	found_space_youget = 1;
 
 	break;
 	}	
@@ -196,6 +199,10 @@ void *first_fit(size_t req_size) {
    *     of the old region.
    * --> If you divide a region, remember to update prev's next pointer!
    */
+
+  if(found_space_youget == 0){
+	ptr = NULL;
+  }
 
   if (DEBUG) printf("Returning pointer: %p\n", ptr);
   return ptr;
@@ -251,6 +258,10 @@ void myfree(void *ptr) {
     return;
   }
 
+	printf("header size: %d\n", header->size);
+	printf("Before free: \n");
+	print_freelist_from(__head);
+
   /* free the buffer pointed to by ptr!
    * To do this, save the location of the old head (hint, it's __head).
    * Then, change the allocation header_t to a node_t. Point __head
@@ -260,14 +271,17 @@ void myfree(void *ptr) {
    */
 
   /* save the current __head of the freelist */
-  /* ??? */
+  node_t *old_head = __head;
 
   /* now set the __head to point to the header_t for the buffer being freed */
-  /* ??? */
-
+  __head = (node_t*) header;
+  printf("header magic vs __head next: %08lx = %08lx\n", header->magic, __head->next);
+  printf("__head size: %d\n", __head->size);
   /* set the new head's next to point to the old head that you saved */
-  /* ??? */
+  __head->next = old_head;
 
   /* PROFIT!!! */
+	printf("After free: \n");
+	print_freelist_from(__head);
 
 }
