@@ -5,7 +5,6 @@
 /* change me to 1 for more debugging information
  * change me to 0 for time testing and to clear your mind
  */
-/* Rudolf Musika & Alfonso Sainz Passed Test0.*/
 #define DEBUG 0
 
 void *__heap = NULL;
@@ -35,7 +34,9 @@ void print_freelist_from(node_t *node) {
   printf("\nPrinting freelist from %p\n", node);
   while (node != NULL) {
     print_node(node);
+	fprintf(2, "Myalloc 1\n");
     node = node->next;
+	fprintf(2, "Myalloc 2\n");
   }
 }
 
@@ -119,15 +120,24 @@ void *first_fit(size_t req_size) {
    * --> If you divide a region, remember to update prev's next pointer!
    */
 // while the listitem is NOT Null,do the following.
-    while(listitem != NULL){
-    	if(listitem->size > 0)
-        	prev = listitem;
-    	if(listitem->size >= req_size){
-      	  ptr = listitem;
-        	alloc = listitem;
-        	__head = prev;
-        	__head->size = prev->size - req_size;
-        	__head->next = listitem->next;
+  //fprintf(2, "Doing first fit");
+  while(listitem != NULL){
+    if((req_size + sizeof(header_t)) <= listitem->size && req_size > 0){
+      alloc = (void*) listitem;
+      alloc->magic = HEAPMAGIC;
+      ptr = (void*) alloc + sizeof(header_t);
+      listitem->size = listitem->size - (req_size + sizeof(header_t));
+      listitem = (void*) ptr + req_size; 
+
+      int is_first_free = 0;
+      if(__head == listitem){
+        is_first_free = 1;
+      }
+      listitem = (void*) ptr + req_size;
+
+      if(is_first_free == 1){
+      	__head = listitem;
+      }
         break;
     }
     listitem = listitem->next;
@@ -135,7 +145,7 @@ void *first_fit(size_t req_size) {
   /*
   if(listitem == NULL)
     return NULL;
-  */
+  */	
 
   if (DEBUG) printf("Returning pointer: %p\n", ptr);
   return ptr;
