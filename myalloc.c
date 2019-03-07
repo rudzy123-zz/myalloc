@@ -129,7 +129,7 @@ void *first_fit(size_t req_size) {
       /*listitem->size = listitem->size - (req_size + sizeof(header_t));//Taken Out*/
      	if((listitem_size - req_size) >= (sizeof(header_t) + 1)){
 // Create a new freelist header at the start of the allocation plus the size of the allocation (the end of the allocation)
-		new_freelist_item_header = get_node((void*) ptr + req_size);
+		new_freelist_item_header = (void*) ptr + req_size;
 		new_freelist_item_header->size = listitem_size - req_size - sizeof(header_t);
 		new_freelist_item_header->next = listitem_next;
 	}
