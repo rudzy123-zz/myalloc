@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/alligator.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+time.h
+-
+myalloc.h
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/myalloc.h
+
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/myalloc.c
+stdio.h
+-
+stdlib.h
+-
+myalloc.h
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/myalloc.h
+
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/myalloc.h
+

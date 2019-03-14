@@ -1,0 +1,3 @@
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/CMakeFiles/edit_cache.dir
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/CMakeFiles/rebuild_cache.dir
+/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/CMakeFiles/alligator.dir

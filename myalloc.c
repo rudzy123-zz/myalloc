@@ -5,6 +5,7 @@
 /* change me to 1 for more debugging information
  * change me to 0 for time testing and to clear your mind
  */
+//	Rudolf Musika. 	&& Alfonzo Sainz	//
 #define DEBUG 0
 
 void *__heap = NULL;
@@ -47,13 +48,11 @@ node_t* sort_linked_list(node_t *old_head){
 	if(old_head == NULL || old_head->next == NULL){
 		return old_head;
 	}
-
 	// Find smallest node
 	node_t *curr;
 	node_t *smallest;
 	node_t *smallestPrev;
 	node_t *prev;
-
 	curr = old_head;
 	smallest = old_head;
 	prev = old_head;
@@ -79,7 +78,6 @@ node_t* sort_linked_list(node_t *old_head){
 
 	// Recurse
 	smallest->next = sort_linked_list(smallest->next);
-
 	return smallest;
 }
 
@@ -91,7 +89,7 @@ void coalesce_freelist() {
   node_t *target = __head;
   node_t *node = target->next;
   node_t *prev = target;
-  int coalescedVersion = 0;
+  long unsigned int coalescedVersion = 0;
 
 	while(target != NULL && node != NULL){
 		if((void*) node == (void*) target + target->size + sizeof(header_t)){
@@ -101,9 +99,9 @@ void coalesce_freelist() {
 			target->next = new_next;
 			coalescedVersion =1;
 		}else{
-			printf("Found NOT coalescible: %08lx != %08lx\n", (void*) node, (void*) target + target->size + sizeof(header_t));
+			printf("Found NOT coalescible: ");
+			printf("%08lx != %08lx\n", ((void *) node), ((void *) target + target->size + sizeof(header_t)));
 		}
-
 		prev = target;
 		target = target->next;
 		node = target->next;
@@ -152,7 +150,7 @@ void init_heap() {
 
 void *first_fit(size_t req_size) {
   void *ptr = __head;/* pointer to the match that we'll return */
-  int found_space_youget = 0; 
+  long unsigned int found_space_youget = 0; 
 
   if (DEBUG)
     printf("In first_fit with size: %u and freelist @ %p\n",
@@ -167,11 +165,11 @@ void *first_fit(size_t req_size) {
   while(listitem != NULL){
     if((req_size + sizeof(header_t)) <= listitem->size && req_size > 0){
 // Initialize helpful working variables you plan to use.
-	int listitem_is_head = 0;
+	long unsigned int listitem_is_head = 0;
 	node_t *new_freelist_item_header = NULL;
 
 // Get a copy of the listitem size to be used.
-	int listitem_size = listitem->size;
+	long unsigned int listitem_size = listitem->size;
 	node_t *listitem_next = listitem->next;
 // The alloc header replaces the listitem
       alloc = (void*) listitem;
@@ -225,7 +223,6 @@ void *first_fit(size_t req_size) {
 	printf("=============> Allocation over. Printing freelist:\n");
 	print_freelist_from(__head);
 	found_space_youget = 1;
-
 	break;
 	}	
 	
@@ -304,7 +301,7 @@ void *myalloc(size_t size) {
  */
 void myfree(void *ptr) {
 
-  if (DEBUG) printf("\nIn myfree with pointer %p\n", ptr);
+  if (DEBUG) {printf("\nIn myfree with pointer %p\n", ptr);}
 
   header_t *header = get_header(ptr); /* get the start of a header from a pointer */
 
@@ -317,6 +314,7 @@ void myfree(void *ptr) {
     printf("The heap is corrupt!\n");
     return;
   }
+
 
 	printf("header size: %d\n", header->size);
 	printf("Before free: \n");
@@ -337,11 +335,11 @@ void myfree(void *ptr) {
   __head = (node_t*) header;
   printf("header magic vs __head next: %08lx = %08lx\n", header->magic, __head->next);
   printf("__head size: %d\n", __head->size);
+
   /* set the new head's next to point to the old head that you saved */
   __head->next = old_head;
 
   /* PROFIT!!! */
 	printf("After free: \n");
 	print_freelist_from(__head);
-
 }
