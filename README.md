@@ -1,6 +1,9 @@
 # myalloc
-replacement for the C-standard functions malloc() and free().
-Rudy and Alfonzo.
+
+Rudy Musika and Alfonso Sainz
+
+
+
 This lab must be completed in groups of two . Both members will receive the same grade . I
 recommend that you work on the programming together (two heads are better than one, and all
 that). However, you may divide the labor if you feel you must.
