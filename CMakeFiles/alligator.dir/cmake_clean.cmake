@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/alligator.dir/alligator.c.o"
-  "CMakeFiles/alligator.dir/myalloc.c.o"
+  "CMakeFiles/alligator.dir/alligator.c.obj"
+  "CMakeFiles/alligator.dir/myalloc.c.obj"
   "alligator.pdb"
   "alligator"
 )

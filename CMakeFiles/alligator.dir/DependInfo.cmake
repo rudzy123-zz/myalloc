@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/alligator.c" "/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/CMakeFiles/alligator.dir/alligator.c.o"
-  "/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/myalloc.c" "/home/csugrads/musik013/cs5631/Labs/lab6/v2/myalloc/CMakeFiles/alligator.dir/myalloc.c.o"
+  "/cygdrive/c/Users/rudol/OperatingSystemsClassUMD/capStoneProject1/myalloc/alligator.c" "/cygdrive/c/Users/rudol/OperatingSystemsClassUMD/capStoneProject1/myalloc/CMakeFiles/alligator.dir/alligator.c.obj"
+  "/cygdrive/c/Users/rudol/OperatingSystemsClassUMD/capStoneProject1/myalloc/myalloc.c" "/cygdrive/c/Users/rudol/OperatingSystemsClassUMD/capStoneProject1/myalloc/CMakeFiles/alligator.dir/myalloc.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
